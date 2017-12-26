@@ -1,0 +1,11 @@
+.shown {
+    display: block;
+}
+
+.hidden {
+    display: none;
+}
+
+.panel {
+    min-width: 200px;
+}

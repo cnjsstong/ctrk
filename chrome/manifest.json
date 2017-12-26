@@ -1,0 +1,24 @@
+{
+  "manifest_version": 2,
+
+  "name": "Craigslist Tracker",
+  "description": "Track craigslist post views, and more.",
+  "version": "1.0",
+  "author": "i@tshen.im",
+
+  "browser_action": {
+    "default_icon": "assets/icon.png",
+    "default_popup": "popup.html",
+    "default_title": "Craigslist Tracker"
+  },
+  "permissions": [
+    "activeTab",
+    "storage"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["https://*.craigslist.org/*"],
+      "js": ["cg.js"]
+    }
+  ]
+}

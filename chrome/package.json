@@ -1,0 +1,17 @@
+{
+  "name": "craigslist-tracker",
+  "version": "1.1.0",
+  "description": "Craigslist tracker Chrome Extension.",
+  "main": "manifest.json",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Tong Shen <i@tshen.im>",
+  "license": "ISC",
+  "dependencies": {
+    "chart.js": "^2.7.1",
+    "spectre.css": "^0.5.0",
+    "vue": "^2.5.13",
+    "vue-chartjs": "^3.0.2"
+  }
+}

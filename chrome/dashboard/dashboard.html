@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Craigslist Tracker</title>
+    <link href="../node_modules/spectre.css/dist/spectre.css" rel="stylesheet">
+</head>
+<body>
+<div id="el" style="padding: 20px">
+    <header class="navbar">
+        <section class="navbar-section">
+            <h4 class="badge" v-bind:data-badge="pixels.length">
+              Tracking
+            </h4>
+        </section>
+    </header>
+
+    <table style="width: 100%" class="table table-hover">
+        <tr>
+            <th>ID</th>
+            <th>Owner</th>
+            <th>Create At</th>
+            <th>Zipcode</th>
+            <th>City</th>
+            <th>State</th>
+            <th>Count</th>
+        </tr>
+        <tr class="c-hand" v-for="pixel in pixels" v-on:click="select(pixel)" v-bind:class="{active: pixel.pixelId === selectedPixel.pixelId}">
+            <td>{{pixel.pixelId}}</td>
+            <td>{{pixel.data.adOwner}}</td>
+            <td>{{new Date(pixel.data.createAt).toLocaleString()}}</td>
+            <td>{{pixel.data.title}}</td>
+            <td>{{pixel.location.city}}</td>
+            <td>{{pixel.location.state}}</td>
+            <td>{{pixel.data.count}}</td>
+        </tr>
+    </table>
+
+    <div class="chart" style="width: 100%; margin-top: 20px;">
+        <bar-chart v-bind:chart-data="chartData2"></bar-chart>
+    </div>
+</div>
+
+
+<script src="../node_modules/vue/dist/vue.js"></script>
+<script src="../node_modules/chart.js/dist/Chart.bundle.js"></script>
+<script src="../node_modules/vue-chartjs/dist/vue-chartjs.js"></script>
+<script src="./dashboard.js"></script>
+</body>
+</html>

@@ -2,15 +2,16 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Craigslist Tracker</title>
+    <link href="../node_modules/spectre.css/dist/spectre.css" rel="stylesheet">
     <link href="popup.css" rel="stylesheet">
 </head>
 <body>
 
-<div id="panel-create" class="panel">
+<div id="panel-create" class="panel hidden">
     <h4>New Tracking</h4>
     <label>
-        Title:
+        Zipcode:
         <input type="text" name="title" id="title">
     </label>
     <label>
@@ -20,6 +21,7 @@
             <option value="rachel">
             <option value="tian">
             <option value="ronald">
+            <option value="irene">
         </datalist>
     </label>
 
@@ -27,14 +29,14 @@
     <button id="submit">Insert Code</button>
 </div>
 
-<div id="panel-stat" class="panel">
+<div id="panel-stat" class="panel hidden">
     <h4>Stats</h4>
     <label>
         ID: <span id="stat-id"></span>
     </label>
     <br>
     <label>
-        Title: <span id="stat-title"></span>
+        Zipcode: <span id="stat-title"></span>
     </label>
     <br>
     <label>

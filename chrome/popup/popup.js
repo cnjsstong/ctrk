@@ -12,26 +12,136 @@ const statCount = document.querySelector("#stat-count");
 const inputTitle = document.querySelector("#title");
 const inputOwner = document.querySelector("#owner");
 
+class BrowserTab {
+    constructor(chromeTabObject) {
+        this.chromeTabObject = chromeTabObject;
+    }
+
+    static getActiveTab() {
+        return new Promise(function (resolve, reject) {
+            chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
+                let tab = tabs[0];
+                if (tab) {
+                    resolve(new BrowserTab(tab));
+                } else {
+                    reject();
+                }
+            });
+        });
+    }
+
+    getUrl() {
+        return this.chromeTabObject && this.chromeTabObject.url ? this.chromeTabObject.url : '';
+    }
+
+    sendMessage(message) {
+        return new Promise(function (resolve, reject) {
+            chrome.tabs.sendMessage(this.chromeTabObject.id, message, function (response) {
+                if (response && response.success) {
+                    resolve(response);
+                } else {
+                    reject(response);
+                }
+            });
+        });
+    }
+}
+
+class Page {
+    constructor(browserTab) {
+        this.browserTab = browserTab;
+    }
+
+    getActivePage() {
+        return BrowserTab.getActiveTab().then((browserTab) => {
+            return new Page(browserTab);
+        });
+    }
+
+    sendMessage(message) {
+        return this.browserTab.sendMessage(message);
+    }
+
+    insertPixel(imageUrl) {
+        return this.sendMessage({
+            action: "POST_INSERT",
+            imageUrl: imageUrl
+        });
+    }
+
+    isPosting() {
+        return this.browserTab.getUrl().indexOf('post.craigslist.org') !== -1;
+    }
+
+    getPixelId() {
+        if (this.browserTab.isPosting()) {
+            return this.sendMessage({
+                action: "POST_GET_ID"
+            }).then(function (res) {
+                return {
+                    isPosting: true,
+                    pixelId: res.pixelId,
+                    zipcode: res.zipcode
+                }
+            });
+        } else {
+            return this.sendMessage({
+                action: "VIEW_GET_ID"
+            }).then(function (res) {
+                return {
+                    isPosting: false,
+                    pixelId: res.pixelId
+                }
+            });
+        }
+    }
+}
+
+class API {
+    constructor(baseUrl) {
+        this.baseUrl = baseUrl;
+    }
+
+    createPixel(zipcode, owner) {
+        return fetch(baseUrl + '/', {
+            method: "POST",
+            body: JSON.stringify({
+                title: zipcode,
+                owner: owner
+            })
+        }).then(function (res) {
+            return res.json();
+        });
+    }
+
+    getPixelStat(pixelId) {
+        return fetch(baseUrl + '/stat/' + pixelId, {
+            method: "GET"
+        }).then(function (res) {
+            return res.json();
+        })
+    }
+}
+
+const api = new API(baseUrl);
+
 let clicked = false;
 
 document.querySelector("#submit").addEventListener("click", function (event) {
-    if(clicked) return;
+    if (clicked) return;
     clicked = true;
     onSubmit();
 });
 
-getPixelId().then(function (res) {
-    refresh(res);
-});
 
 function refresh(res) {
     const pixelId = res.pixelId;
-    if(pixelId) {
+    if (pixelId) {
         panelCreate.className = 'hidden panel';
         panelStat.className = 'shown panel';
         panelEmpty.className = 'hidden panel';
         showStat(pixelId);
-    } else if(res.isPosting) {
+    } else if (res.isPosting) {
         panelCreate.className = 'shown panel';
         panelStat.className = 'hidden panel';
         panelEmpty.className = 'hidden panel';
@@ -88,7 +198,7 @@ function getChromeTab() {
 function sendMessageToTab(tab, message) {
     return new Promise(function (resolve, reject) {
         chrome.tabs.sendMessage(tab.id, message, function (response) {
-            if(response && response.success) {
+            if (response && response.success) {
                 resolve(response);
             } else {
                 reject(response);
@@ -113,7 +223,7 @@ function insertPixelImage(imageUrl) {
 function getPixelId() {
     return getChromeTab().then(function (tab) {
         const isPosting = tab.url.indexOf('post.craigslist.org') != -1;
-        if(isPosting) {
+        if (isPosting) {
             return sendMessageToTab(tab, {
                 action: "POST_GET_ID"
             }).then(function (res) {
@@ -143,3 +253,15 @@ function getPixelStat(pixelId) {
         return res.json();
     })
 }
+
+const app = new Vue({
+    el: '#el',
+    data: {
+        mode: 'welcome'
+    },
+    created: function () {
+        getPixelId().then(function (res) {
+            refresh(res);
+        });
+    }
+});

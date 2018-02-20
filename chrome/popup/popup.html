@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Craigslist Tracker</title>
+    <link href="../node_modules/spectre.css/dist/spectre.css" rel="stylesheet">
+    <link href="popup.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="container panel" id="el">
+    <div v-show="mode == 'create'">
+        <h4>New Tracking</h4>
+        <label>
+            Zipcode:
+            <input type="text" name="title" id="title">
+        </label>
+        <label>
+            Owner:
+            <input type="text" name="owner" id="owner" value="" list="ownerList">
+            <datalist id="ownerList">
+                <option value="rachel">
+                <option value="tian">
+                <option value="ronald">
+                <option value="irene">
+            </datalist>
+        </label>
+
+        <hr>
+        <button id="submit">Insert Code</button>
+    </div>
+
+    <div v-show="mode == 'stat'">
+        <h4>Stats</h4>
+        <label>
+            ID: <span id="stat-id"></span>
+        </label>
+        <br>
+        <label>
+            Zipcode: <span id="stat-title"></span>
+        </label>
+        <br>
+        <label>
+            Owner: <span id="stat-owner"></span>
+        </label>
+
+        <hr>
+        <label>
+            Count: <span id="stat-count"></span>
+        </label>
+    </div>
+
+    <div v-show="mode == 'welcome'">
+        <h1>Welcome!</h1>
+    </div>
+</div>
+
+<script src="../node_modules/vue/dist/vue.js"></script>
+<script type="text/javascript" src="popup.js"></script>
+
+</body>
+</html>
